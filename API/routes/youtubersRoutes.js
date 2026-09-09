@@ -7,8 +7,8 @@ router.get('/', apiController.getAllYT)
 router.get('/:id', apiController.getYTbyID)
 
 // routes admin 
-//router.post('/', apiController.createYT)
+router.post('/', apiController.createYT)
 //router.put('/:id', apiController.updateYT)
-//router.delete('/:id', apiController.deleteYT)
+router.delete('/:id', apiController.deleteYT)
 
 module.exports = router

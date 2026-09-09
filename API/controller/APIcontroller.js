@@ -32,3 +32,46 @@ exports.getYTbyID = async (req, res) => {   //json
     res.status(500).json({ success: false, error: "Une erreur est survenue" })
   }
 }
+
+exports.createYT = async (req, res) => {
+  try {
+    const { nom_chaine, nombre_abonnes, theme } = req.body
+
+    if (!nom_chaine) {
+      return res.status(400).json({ success: false, error: "Le nom de la chaîne est obligatoire" })
+    }
+
+    const newYoutuber = {
+      id: youtubers.length + 1,
+      nom_chaine: nom_chaine,
+      nombre_abonnes: nombre_abonnes || "?",
+      theme: theme || "?",
+      classement: youtubers.length + 1
+    }
+
+    youtubers.push(newYoutuber)
+
+    res.status(201).json({ success: true, data: newYoutuber })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ success: false, error: "Une erreur est survenue" })
+  }
+}
+
+exports.deleteYT = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id)
+    const index = youtubers.findIndex(y => y.id === id)
+
+    if (index === -1) {
+      return res.status(404).json({ success: false, error: "YouTubeur non trouvé" })
+    }
+
+    const deleted = youtubers.splice(index, 1)
+
+    res.status(200).json({ success: true, message: "YouTubeur supprimé avec succès", data: deleted[0] })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ success: false, error: "Une erreur est survenue" })
+  }
+}
