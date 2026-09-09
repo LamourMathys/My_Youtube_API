@@ -4,7 +4,7 @@ const apiController = require('../controller/APIcontroller')
 
 // routes publiqeus 
 router.get('/', apiController.getAllYT)
-//router.get('/:id', apiController.getByIdYT)
+router.get('/:id', apiController.getYTbyID)
 
 // routes admin 
 //router.post('/', apiController.createYT)

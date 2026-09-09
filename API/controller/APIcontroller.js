@@ -16,3 +16,19 @@ exports.getAllYT = async (req, res) => { //json
 }
 
 //change when the data will be on a db
+
+exports.getYTbyID = async (req, res) => {   //json
+  try {
+    const id = parseInt(req.params.id)
+    const youtuber = youtubers.find(y => y.id === id)
+
+    if (!youtuber) {
+      return res.status(404).json({ success: false, error: "YouTubeur non trouvé" })
+    }
+
+    res.status(200).json({ success: true, data: youtuber })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ success: false, error: "Une erreur est survenue" })
+  }
+}
