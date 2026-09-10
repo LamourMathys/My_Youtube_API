@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>YouTubeurs</title>
+</head>
+<body>
+
+  <h1>Liste des YouTubeurs</h1>
+
+  <a id="prev">← Précédent</a> | <a id="next">Suivant →</a>
+
+  <ul id="liste">Chargement...</ul>
+
+  <script>
+    const page = Number(new URLSearchParams(location.search).get('page')) || 1
+
+    document.getElementById('prev').href = '?page=' + Math.max(1, page - 1)
+    document.getElementById('next').href = '?page=' + (page + 1)
+
+    fetch('/YTAPI?page=' + page)
+      .then(res => res.json())
+      .then(result => {
+        document.getElementById('liste').innerHTML = result.data
+          .map(y => `<li>#${y.id} - <strong>${y.nom_chaine}</strong> (${y.nombre_abonnes})</li>`)
+          .join('')
+      })
+  </script>
+
+</body>
+</html>

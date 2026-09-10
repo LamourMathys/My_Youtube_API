@@ -6,10 +6,8 @@ app.use(express.json())
 const youtubersRoutes = require('./routes/youtubersRoutes')
 app.use('/YTAPI', youtubersRoutes)
 
-app.get('/', (req, res) => {
-  res.send('go to /YTAPI')
-})
 
+app.use(express.static('public'))
 app.listen(3000, () => {
   console.log('localhost:3000')
 })

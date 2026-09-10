@@ -1,6 +1,6 @@
 let youtubers = require('../youtubers.json')
 
-exports.getAllYT = async (req, res) => { //json
+exports.getAllYT = async (req, res) => { //get 20 youtubers by page
   try {
     const page = parseInt(req.query.page) || 1 //http://localhost:3000/youtubers?page=1 
     const limit = 20
@@ -15,9 +15,8 @@ exports.getAllYT = async (req, res) => { //json
   }
 }
 
-//change when the data will be on a db
 
-exports.getYTbyID = async (req, res) => {   //json
+exports.getYTbyID = async (req, res) => {   //find specific youtuber with his id 
   try {
     const id = parseInt(req.params.id)
     const youtuber = youtubers.find(y => y.id === id)
@@ -33,7 +32,7 @@ exports.getYTbyID = async (req, res) => {   //json
   }
 }
 
-exports.createYT = async (req, res) => {
+exports.createYT = async (req, res) => { //add a youtuber to the json file
   try {
     const { nom_chaine, nombre_abonnes, theme } = req.body
 
@@ -58,7 +57,29 @@ exports.createYT = async (req, res) => {
   }
 }
 
-exports.deleteYT = async (req, res) => {
+exports.updateYT = async (req, res) => { //update a specific youtuber with his id in the json file
+  try {
+    const id = parseInt(req.params.id)
+    const youtuber = youtubers.find(y => y.id === id)
+
+    if (!youtuber) {
+      return res.status(404).json({ success: false, error: "YouTubeur non trouvé" })
+    }
+
+    const { nom_chaine, nombre_abonnes, theme } = req.body
+
+    if (nom_chaine) youtuber.nom_chaine = nom_chaine
+    if (nombre_abonnes) youtuber.nombre_abonnes = nombre_abonnes
+    if (theme) youtuber.theme = theme
+
+    res.status(200).json({ success: true, data: youtuber })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ success: false, error: "Une erreur est survenue" })
+  }
+}
+
+exports.deleteYT = async (req, res) => { //delete a youtuber specific youtuber with his id in the json file 
   try {
     const id = parseInt(req.params.id)
     const index = youtubers.findIndex(y => y.id === id)
