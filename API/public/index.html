@@ -1,14 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="Logo_moche.png">
   <title>YouTubeurs</title>
   <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .header img {
+      height: 45px;
+      width: auto;
+      object-fit: contain;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 26px;
+    }
+    .nav {
+      margin-bottom: 16px;
+    }
     .grid {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 16px;
     }
     .box {
       border: 1px solid #ccc;
@@ -20,14 +42,14 @@
 </head>
 <body>
 
-  <div>
-    <img src="Logo_moche.png" alt="Logo" height="50" onerror="this.style.display='none'">
+  <header class="header">
+    <img src="Logo_moche.png" alt="Logo" onerror="this.style.display='none'">
     <h1>Liste des YouTubeurs</h1>
-  </div>
+  </header>
 
-  <div>
+  <nav class="nav">
     <a id="prev">← Précédent</a> | <a id="next">Suivant →</a>
-  </div>
+  </nav>
 
   <div id="liste" class="grid">Chargement...</div>
 
@@ -43,7 +65,7 @@
         document.getElementById('liste').innerHTML = result.data
           .map(y => `
             <div class="box">
-              <h3>${y.nom_chaine}</h3>
+              <h3 style="margin-top: 0;">${y.nom_chaine}</h3>
               <p><strong>Abonnés :</strong> ${y.nombre_abonnes}</p>
               <p><strong>Thème :</strong> ${y.theme || '?'}</p>
               <p><strong>Classement :</strong> #${y.classement || y.id}</p>

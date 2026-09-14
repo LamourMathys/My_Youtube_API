@@ -1,0 +1,67 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "YouTube Creators API",
+    "version": "1.0.0",
+    "description": "API d'exploration et de gestion des YouTubeurs"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/YTAPI": {
+      "get": {
+        "summary": "Récupérer la liste des YouTubeurs (avec pagination)",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Numéro de page (20 par page)"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Succès" }
+        }
+      },
+      "post": {
+        "summary": "Ajouter un YouTubeur (Admin)",
+        "responses": {
+          "201": { "description": "Créé" }
+        }
+      }
+    },
+    "/YTAPI/{id}": {
+      "get": {
+        "summary": "Récupérer un YouTubeur par son ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "YouTubeur trouvé" },
+          "404": { "description": "Non trouvé" }
+        }
+      },
+      "put": {
+        "summary": "Modifier un YouTubeur (Admin)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Mis à jour" }
+        }
+      },
+      "delete": {
+        "summary": "Supprimer un YouTubeur (Admin)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Supprimé" }
+        }
+      }
+    }
+  }
+}
