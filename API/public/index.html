@@ -3,14 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>YouTubeurs</title>
+  <style>
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .box {
+      border: 1px solid #ccc;
+      padding: 12px;
+      width: 200px;
+      border-radius: 6px;
+    }
+  </style>
 </head>
 <body>
 
-  <h1>Liste des YouTubeurs</h1>
+  <div>
+    <img src="Logo_moche.png" alt="Logo" height="50" onerror="this.style.display='none'">
+    <h1>Liste des YouTubeurs</h1>
+  </div>
 
-  <a id="prev">← Précédent</a> | <a id="next">Suivant →</a>
+  <div>
+    <a id="prev">← Précédent</a> | <a id="next">Suivant →</a>
+  </div>
 
-  <ul id="liste">Chargement...</ul>
+  <div id="liste" class="grid">Chargement...</div>
 
   <script>
     const page = Number(new URLSearchParams(location.search).get('page')) || 1
@@ -22,7 +41,14 @@
       .then(res => res.json())
       .then(result => {
         document.getElementById('liste').innerHTML = result.data
-          .map(y => `<li>#${y.id} - <strong>${y.nom_chaine}</strong> (${y.nombre_abonnes})</li>`)
+          .map(y => `
+            <div class="box">
+              <h3>${y.nom_chaine}</h3>
+              <p><strong>Abonnés :</strong> ${y.nombre_abonnes}</p>
+              <p><strong>Thème :</strong> ${y.theme || '?'}</p>
+              <p><strong>Classement :</strong> #${y.classement || y.id}</p>
+            </div>
+          `)
           .join('')
       })
   </script>
