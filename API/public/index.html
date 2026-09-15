@@ -4,41 +4,7 @@
   <meta charset="UTF-8">
   <link rel="icon" type="image/png" href="Logo_moche.png">
   <title>YouTubeurs</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 20px;
-    }
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-    .header img {
-      height: 45px;
-      width: auto;
-      object-fit: contain;
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 26px;
-    }
-    .nav {
-      margin-bottom: 16px;
-    }
-    .grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .box {
-      border: 1px solid #ccc;
-      padding: 12px;
-      width: 200px;
-      border-radius: 6px;
-    }
-  </style>
+  <link href="style.css" rel="stylesheet">
 </head>
 <body>
 
@@ -46,6 +12,20 @@
     <img src="Logo_moche.png" alt="Logo" onerror="this.style.display='none'">
     <h1>Liste des YouTubeurs</h1>
   </header>
+
+  <div class="login-box">
+    <div id="loginForm">
+      <h3>Connexion Admin</h3>
+      <input type="text" id="username" placeholder="Identifiant">
+      <input type="password" id="password" placeholder="Mot de passe">
+      <button id="loginBtn">Connexion</button>
+      <div id="loginMsg"></div>
+    </div>
+    <div id="loggedSection" style="display: none;">
+      <p style="margin: 0 0 10px 0; color: green;">Connecté en tant qu'admin</p>
+      <button id="logoutBtn">Déconnexion</button>
+    </div>
+  </div>
 
   <nav class="nav">
     <a id="prev">← Précédent</a> | <a id="next">Suivant →</a>
@@ -73,6 +53,51 @@
           `)
           .join('')
       })
+
+    function updateAuthUI() {
+      const token = localStorage.getItem('token')
+      if (token) {
+        document.getElementById('loginForm').style.display = 'none'
+        document.getElementById('loggedSection').style.display = 'block'
+      } else {
+        document.getElementById('loginForm').style.display = 'block'
+        document.getElementById('loggedSection').style.display = 'none'
+      }
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const username = document.getElementById('username').value
+      const password = document.getElementById('password').value
+      const msg = document.getElementById('loginMsg')
+
+      fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.token) {
+          localStorage.setItem('token', data.token)
+          msg.textContent = ''
+          updateAuthUI()
+        } else {
+          msg.className = 'msg-error'
+          msg.textContent = data.error || 'Erreur de connexion'
+        }
+      })
+      .catch(() => {
+        msg.className = 'msg-error'
+        msg.textContent = 'Erreur serveur'
+      })
+    })
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('token')
+      updateAuthUI()
+    })
+
+    updateAuthUI()
   </script>
 
 </body>
