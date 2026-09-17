@@ -20,6 +20,7 @@
       <input type="password" id="password" placeholder="Mot de passe">
       <button id="loginBtn">Connexion</button>
       <div id="loginMsg"></div>
+      <a href="/auth/login" class="google-btn">Connect with Google</a>
     </div>
     <div id="loggedSection" style="display: none;">
       <p style="margin: 0 0 10px 0; color: green;">Connecté en tant qu'admin</p>
@@ -34,7 +35,22 @@
   <div id="liste" class="grid">Chargement...</div>
 
   <script>
-    const page = Number(new URLSearchParams(location.search).get('page')) || 1
+    const urlParams = new URLSearchParams(location.search)
+    const page = Number(urlParams.get('page')) || 1
+    const tokenFromUrl = urlParams.get('token')
+
+    if (tokenFromUrl) {
+      localStorage.setItem('token', tokenFromUrl)
+      history.replaceState({}, document.title, location.pathname)
+    }
+
+    const errorFromUrl = urlParams.get('error')
+    if (errorFromUrl) {
+      const msg = document.getElementById('loginMsg')
+      msg.className = 'msg-error'
+      msg.textContent = 'Compte Google non autorisé'
+      history.replaceState({}, document.title, location.pathname)
+    }
 
     document.getElementById('prev').href = '?page=' + Math.max(1, page - 1)
     document.getElementById('next').href = '?page=' + (page + 1)

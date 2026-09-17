@@ -8,9 +8,11 @@ const app = express()
 app.use(express.json())
 
 const loginRoutes = require('./routes/loginRoutes')
+const authRoutes = require('./routes/authRoutes')
 const youtubersRoutes = require('./routes/youtubersRoutes')
 
 app.use('/login', loginRoutes)
+app.use('/auth', authRoutes)
 app.use('/YTAPI', youtubersRoutes)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
