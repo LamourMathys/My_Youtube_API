@@ -1,4 +1,5 @@
 let youtubers = require('../youtubers.json')
+const redisClient = require('../config/redis')
 
 exports.getAllYT = async (req, res) => { //get 20 youtubers by page
   try {
@@ -32,6 +33,22 @@ exports.getYTbyID = async (req, res) => {   //find specific youtuber with his id
   }
 }
 
+async function clearCache(id = null) { //clear redis when CUD
+  if (!redisClient.isOpen) return
+  try {
+    const keys = await redisClient.keys('yt:cache:/YTAPI*')
+    if (keys.length > 0) {
+      await redisClient.del(keys)
+    }
+
+    if (id) {
+      await redisClient.del(`yt:cache:/YTAPI/${id}`)
+    }
+  } catch (err) {
+    console.error('Erreur invalidation cache :', err.message)
+  }
+}
+
 exports.createYT = async (req, res) => { //add a youtuber to the json file
   try {
     const { nom_chaine, nombre_abonnes, theme } = req.body
@@ -49,7 +66,7 @@ exports.createYT = async (req, res) => { //add a youtuber to the json file
     }
 
     youtubers.push(newYoutuber)
-
+    await clearCache()
     res.status(201).json({ success: true, data: newYoutuber })
   } catch (error) {
     console.error(error)
@@ -71,7 +88,7 @@ exports.updateYT = async (req, res) => { //update a specific youtuber with his i
     if (nom_chaine) youtuber.nom_chaine = nom_chaine
     if (nombre_abonnes) youtuber.nombre_abonnes = nombre_abonnes
     if (theme) youtuber.theme = theme
-
+    await clearCache(id)
     res.status(200).json({ success: true, data: youtuber })
   } catch (error) {
     console.error(error)
@@ -89,7 +106,7 @@ exports.deleteYT = async (req, res) => { //delete a youtuber specific youtuber w
     }
 
     const deleted = youtubers.splice(index, 1)
-
+    await clearCache(id)
     res.status(200).json({ success: true, message: "YouTubeur supprimé avec succès", data: deleted[0] })
   } catch (error) {
     console.error(error)

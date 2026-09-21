@@ -8,6 +8,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "postgres": "^3.4.9",
+    "redis": "^6.2.1",
     "swagger-ui-express": "^5.0.1"
   }
 }
