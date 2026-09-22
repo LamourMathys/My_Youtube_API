@@ -69,78 +69,82 @@ function attachDetailEvents(item) {
     })
   }
 
-  saveEditBtn.addEventListener('click', () => {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      actionMsg.className = 'msg-error'
-      actionMsg.textContent = 'Connexion admin requise'
-      return
-    }
-
-    const nom_chaine = document.getElementById('editNom').value.trim()
-    const nombre_abonnes = document.getElementById('editSubs').value.trim()
-    const theme = document.getElementById('editTheme').value.trim()
-
-    fetch('/YTAPI/' + currentY.id, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({ nom_chaine, nombre_abonnes, theme })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success && data.data) {
-        currentY = data.data
-        document.getElementById('viewNom').textContent = currentY.nom_chaine
-        document.getElementById('viewSubs').textContent = currentY.nombre_abonnes
-        document.getElementById('viewTheme').textContent = currentY.theme || '?'
-        cardView.style.display = 'block'
-        editForm.style.display = 'none'
-        actionMsg.className = 'msg-success'
-        actionMsg.textContent = 'Modifié avec succès'
-      } else {
+  if (saveEditBtn) {
+    saveEditBtn.addEventListener('click', () => {
+      const token = localStorage.getItem('token')
+      if (!token) {
         actionMsg.className = 'msg-error'
-        actionMsg.textContent = data.error || 'Erreur de modification'
+        actionMsg.textContent = 'Connexion admin requise'
+        return
       }
-    })
-    .catch(() => {
-      actionMsg.className = 'msg-error'
-      actionMsg.textContent = 'Erreur serveur'
-    })
-  })
 
-  deleteBtn.addEventListener('click', () => {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      actionMsg.className = 'msg-error'
-      actionMsg.textContent = 'Connexion admin requise'
-      return
-    }
+      const nom_chaine = document.getElementById('editNom').value.trim()
+      const nombre_abonnes = document.getElementById('editSubs').value.trim()
+      const theme = document.getElementById('editTheme').value.trim()
 
-    if (!confirm('Supprimer ce YouTubeur ?')) return
-
-    fetch('/YTAPI/' + currentY.id, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        document.getElementById('liste').innerHTML = '<p class="msg-success">YouTubeur supprimé avec succès</p>'
-      } else {
+      fetch('/YTAPI/' + currentY.id, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ nom_chaine, nombre_abonnes, theme })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          currentY = data.data
+          document.getElementById('viewNom').textContent = currentY.nom_chaine
+          document.getElementById('viewSubs').textContent = currentY.nombre_abonnes
+          document.getElementById('viewTheme').textContent = currentY.theme || '?'
+          cardView.style.display = 'block'
+          editForm.style.display = 'none'
+          actionMsg.className = 'msg-success'
+          actionMsg.textContent = 'Modifié avec succès'
+        } else {
+          actionMsg.className = 'msg-error'
+          actionMsg.textContent = data.error || 'Erreur de modification'
+        }
+      })
+      .catch(() => {
         actionMsg.className = 'msg-error'
-        actionMsg.textContent = data.error || 'Erreur de suppression'
+        actionMsg.textContent = 'Erreur serveur'
+      })
+    })
+  }
+
+  if (deleteBtn) {
+    deleteBtn.addEventListener('click', () => {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        actionMsg.className = 'msg-error'
+        actionMsg.textContent = 'Connexion admin requise'
+        return
       }
+
+      if (!confirm('Supprimer ce YouTubeur ?')) return
+
+      fetch('/YTAPI/' + currentY.id, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('liste').innerHTML = '<p class="msg-success">YouTubeur supprimé avec succès</p>'
+        } else {
+          actionMsg.className = 'msg-error'
+          actionMsg.textContent = data.error || 'Erreur de suppression'
+        }
+      })
+      .catch(() => {
+        actionMsg.className = 'msg-error'
+        actionMsg.textContent = 'Erreur serveur'
+      })
     })
-    .catch(() => {
-      actionMsg.className = 'msg-error'
-      actionMsg.textContent = 'Erreur serveur'
-    })
-  })
+  }
 }
 
 function searchById() {
