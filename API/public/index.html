@@ -28,93 +28,32 @@
     </div>
   </div>
 
-  <nav class="nav">
+  <div class="create-box" id="createSection" style="display: none;">
+    <h3>Ajouter un YouTubeur</h3>
+    <input type="text" id="newNom" placeholder="Nom de la chaîne *">
+    <input type="text" id="newSubs" placeholder="Abonnés (ex: 10M)">
+    <input type="text" id="newTheme" placeholder="Thème (ex: Gaming)">
+    <button id="createBtn" class="action-btn">Ajouter</button>
+    <div id="createMsg" style="margin-top: 6px;"></div>
+  </div>
+
+  <div class="search-box">
+    <input type="number" id="searchId" placeholder="ID (ex: 1)" min="1">
+    <button id="searchBtn">Rechercher</button>
+    <button id="resetBtn" style="display: none;">← Voir toute la liste</button>
+    <span id="searchMsg" class="msg-error"></span>
+  </div>
+
+  <nav class="nav" id="paginationNav">
     <a id="prev">← Précédent</a> | <a id="next">Suivant →</a>
   </nav>
 
   <div id="liste" class="grid">Chargement...</div>
 
-  <script>
-    const urlParams = new URLSearchParams(location.search)
-    const page = Number(urlParams.get('page')) || 1
-    const tokenFromUrl = urlParams.get('token')
-
-    if (tokenFromUrl) {
-      localStorage.setItem('token', tokenFromUrl)
-      history.replaceState({}, document.title, location.pathname)
-    }
-
-    const errorFromUrl = urlParams.get('error')
-    if (errorFromUrl) {
-      const msg = document.getElementById('loginMsg')
-      msg.className = 'msg-error'
-      msg.textContent = 'Compte Google non autorisé'
-      history.replaceState({}, document.title, location.pathname)
-    }
-
-    document.getElementById('prev').href = '?page=' + Math.max(1, page - 1)
-    document.getElementById('next').href = '?page=' + (page + 1)
-
-    fetch('/YTAPI?page=' + page)
-      .then(res => res.json())
-      .then(result => {
-        document.getElementById('liste').innerHTML = result.data
-          .map(y => `
-            <div class="box">
-              <h3 style="margin-top: 0;">${y.nom_chaine}</h3>
-              <p><strong>Abonnés :</strong> ${y.nombre_abonnes}</p>
-              <p><strong>Thème :</strong> ${y.theme || '?'}</p>
-              <p><strong>Classement :</strong> #${y.classement || y.id}</p>
-            </div>
-          `)
-          .join('')
-      })
-
-    function updateAuthUI() {
-      const token = localStorage.getItem('token')
-      if (token) {
-        document.getElementById('loginForm').style.display = 'none'
-        document.getElementById('loggedSection').style.display = 'block'
-      } else {
-        document.getElementById('loginForm').style.display = 'block'
-        document.getElementById('loggedSection').style.display = 'none'
-      }
-    }
-
-    document.getElementById('loginBtn').addEventListener('click', () => {
-      const username = document.getElementById('username').value
-      const password = document.getElementById('password').value
-      const msg = document.getElementById('loginMsg')
-
-      fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.token) {
-          localStorage.setItem('token', data.token)
-          msg.textContent = ''
-          updateAuthUI()
-        } else {
-          msg.className = 'msg-error'
-          msg.textContent = data.error || 'Erreur de connexion'
-        }
-      })
-      .catch(() => {
-        msg.className = 'msg-error'
-        msg.textContent = 'Erreur serveur'
-      })
-    })
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('token')
-      updateAuthUI()
-    })
-
-    updateAuthUI()
-  </script>
+  <script src="js/auth.js"></script>
+  <script src="js/list.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/create.js"></script>
 
 </body>
 </html>

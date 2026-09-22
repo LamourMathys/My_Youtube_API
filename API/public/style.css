@@ -72,6 +72,30 @@ body {
 .google-btn:hover {
   background-color: #e4e4e4;
 }
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.search-box input {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 140px;
+}
+.search-box button {
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.search-box button:hover {
+  background-color: #e4e4e4;
+}
 .nav {
   margin-bottom: 16px;
 }
@@ -85,4 +109,42 @@ body {
   padding: 12px;
   width: 200px;
   border-radius: 6px;
+}
+.action-btn {
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 13px;
+}
+.action-btn:hover {
+  background-color: #e4e4e4;
+}
+.action-btn.danger {
+  color: #c00;
+  border-color: #e0b4b4;
+}
+.action-btn.danger:hover {
+  background-color: #ffebeb;
+}
+.create-box {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 20px;
+  max-width: 500px;
+}
+.create-box h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+.create-box input {
+  padding: 6px 8px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
 }

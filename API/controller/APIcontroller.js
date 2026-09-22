@@ -49,6 +49,25 @@ async function clearCache(id = null) { //clear redis when CUD
   }
 }
 
+function parseSubscribers(subStr) {
+  if (typeof subStr === 'number') return subStr
+  if (!subStr) return 0
+  const str = String(subStr).trim().toUpperCase()
+  if (str.endsWith('B')) return parseFloat(str) * 1e9
+  if (str.endsWith('M')) return parseFloat(str) * 1e6
+  if (str.endsWith('K')) return parseFloat(str) * 1e3
+  const num = parseFloat(str)
+  return isNaN(num) ? 0 : num
+}
+
+function reindex() {
+  youtubers.sort((a, b) => parseSubscribers(b.nombre_abonnes) - parseSubscribers(a.nombre_abonnes))
+  for (let i = 0; i < youtubers.length; i++) {
+    youtubers[i].id = i + 1
+    youtubers[i].classement = i + 1
+  }
+}
+
 exports.createYT = async (req, res) => { //add a youtuber to the json file
   try {
     const { nom_chaine, nombre_abonnes, theme } = req.body
@@ -58,14 +77,15 @@ exports.createYT = async (req, res) => { //add a youtuber to the json file
     }
 
     const newYoutuber = {
-      id: youtubers.length + 1,
+      id: 0,
       nom_chaine: nom_chaine,
       nombre_abonnes: nombre_abonnes || "?",
       theme: theme || "?",
-      classement: youtubers.length + 1
+      classement: 0
     }
 
     youtubers.push(newYoutuber)
+    reindex()
     await clearCache()
     res.status(201).json({ success: true, data: newYoutuber })
   } catch (error) {
@@ -88,7 +108,9 @@ exports.updateYT = async (req, res) => { //update a specific youtuber with his i
     if (nom_chaine) youtuber.nom_chaine = nom_chaine
     if (nombre_abonnes) youtuber.nombre_abonnes = nombre_abonnes
     if (theme) youtuber.theme = theme
-    await clearCache(id)
+
+    reindex()
+    await clearCache()
     res.status(200).json({ success: true, data: youtuber })
   } catch (error) {
     console.error(error)
@@ -106,7 +128,8 @@ exports.deleteYT = async (req, res) => { //delete a youtuber specific youtuber w
     }
 
     const deleted = youtubers.splice(index, 1)
-    await clearCache(id)
+    reindex()
+    await clearCache()
     res.status(200).json({ success: true, message: "YouTubeur supprimé avec succès", data: deleted[0] })
   } catch (error) {
     console.error(error)
