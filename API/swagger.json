@@ -3,14 +3,51 @@
   "info": {
     "title": "YouTube Creators API",
     "version": "1.0.0",
-    "description": "API d'exploration et de gestion des YouTubeurs"
+    "description": "API d'exploration et de gestion des YouTubeurs. Authentifiez-vous via /login puis cliquez sur 'Authorize' pour tester les routes protégées."
   },
   "servers": [
+    {
+      "url": "https://ytapi.mathyslamour.fr"
+    },
     {
       "url": "http://localhost:3000"
     }
   ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Entrez votre Token JWT obtenu après connexion"
+      }
+    }
+  },
   "paths": {
+    "/login": {
+      "post": {
+        "summary": "Connexion administrateur pour obtenir le token JWT",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "password"],
+                "properties": {
+                  "username": { "type": "string", "example": "zig_pro" },
+                  "password": { "type": "string", "example": "votre_mot_de_passe" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Connexion réussie avec token" },
+          "401": { "description": "Identifiants invalides" }
+        }
+      }
+    },
     "/YTAPI": {
       "get": {
         "summary": "Récupérer la liste des YouTubeurs (avec pagination)",
@@ -28,8 +65,28 @@
       },
       "post": {
         "summary": "Ajouter un YouTubeur (Admin)",
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["nom_chaine"],
+                "properties": {
+                  "nom_chaine": { "type": "string", "example": "Squeezie" },
+                  "nombre_abonnes": { "type": "string", "example": "18.5M" },
+                  "theme": { "type": "string", "example": "Gaming / Divertissement" }
+                }
+              }
+            }
+          }
+        },
         "responses": {
-          "201": { "description": "Créé" }
+          "201": { "description": "Créé avec succès" },
+          "401": { "description": "Non autorisé (token manquant ou invalide)" }
         }
       }
     },
@@ -37,7 +94,7 @@
       "get": {
         "summary": "Récupérer un YouTubeur par son ID",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
         ],
         "responses": {
           "200": { "description": "YouTubeur trouvé" },
@@ -46,20 +103,45 @@
       },
       "put": {
         "summary": "Modifier un YouTubeur (Admin)",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        "security": [
+          { "bearerAuth": [] }
         ],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nom_chaine": { "type": "string", "example": "MrBeast Updated" },
+                  "nombre_abonnes": { "type": "string", "example": "550M" },
+                  "theme": { "type": "string", "example": "Entertainment" }
+                }
+              }
+            }
+          }
+        },
         "responses": {
-          "200": { "description": "Mis à jour" }
+          "200": { "description": "Mis à jour" },
+          "401": { "description": "Non autorisé" },
+          "404": { "description": "Non trouvé" }
         }
       },
       "delete": {
         "summary": "Supprimer un YouTubeur (Admin)",
+        "security": [
+          { "bearerAuth": [] }
+        ],
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
         ],
         "responses": {
-          "200": { "description": "Supprimé" }
+          "200": { "description": "Supprimé avec succès" },
+          "401": { "description": "Non autorisé" },
+          "404": { "description": "Non trouvé" }
         }
       }
     }

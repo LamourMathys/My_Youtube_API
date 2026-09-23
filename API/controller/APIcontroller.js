@@ -63,7 +63,6 @@ function parseSubscribers(subStr) {
 function reindex() {
   youtubers.sort((a, b) => parseSubscribers(b.nombre_abonnes) - parseSubscribers(a.nombre_abonnes))
   for (let i = 0; i < youtubers.length; i++) {
-    youtubers[i].id = i + 1
     youtubers[i].classement = i + 1
   }
 }
@@ -76,8 +75,10 @@ exports.createYT = async (req, res) => { //add a youtuber to the json file
       return res.status(400).json({ success: false, error: "Le nom de la chaîne est obligatoire" })
     }
 
+    const maxId = youtubers.reduce((max, y) => Math.max(max, Number(y.id) || 0), 0)
+
     const newYoutuber = {
-      id: 0,
+      id: maxId + 1,
       nom_chaine: nom_chaine,
       nombre_abonnes: nombre_abonnes || "?",
       theme: theme || "?",
