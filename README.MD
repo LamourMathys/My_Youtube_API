@@ -1,4 +1,4 @@
-<img src="API/public/Logo_moche.png" align="center" alt="YTAPI Logo" width="120" style="border-radius: 12px; margin-bottom: 10px;">  
+<img src="API/public/Logo.png" align="center" alt="YTAPI Logo" width="120" style="border-radius: 12px; margin-bottom: 10px;">  
 
 # My_YT_api
 
